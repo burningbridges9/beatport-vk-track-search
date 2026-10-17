@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "Beatport → VK Track Search",
+  "short_name": "Beatport VK",
+  "version": "1.0.0",
+  "description": "Добавляет кнопку поиска трека в аудио VK рядом с каждым треком на Beatport.",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://www.beatport.com/*",
+    "https://beatport.com/*",
+    "https://vk.ru/*",
+    "https://vk.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Beatport → VK Track Search — настройки"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.beatport.com/*", "https://beatport.com/*"],
+      "js": ["common.js", "content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://vk.ru/*", "https://vk.com/*"],
+      "js": ["common.js", "vk.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

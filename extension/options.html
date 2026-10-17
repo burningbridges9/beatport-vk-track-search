@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Beatport → VK Track Search — настройки</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
+          <circle cx="10.5" cy="10.5" r="6.2" stroke="currentColor" stroke-width="2.2"></circle>
+          <path d="M15.2 15.2 20 20" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
+        </svg>
+      </div>
+      <div>
+        <h1>Beatport → VK Track Search</h1>
+        <p class="sub">Кнопка поиска трека в аудио VK рядом с каждым треком на Beatport.</p>
+      </div>
+    </header>
+
+    <form id="settings" class="card" autocomplete="off">
+      <div class="row">
+        <label class="text" for="enabled">
+          <span class="label">Расширение включено</span>
+          <span class="hint">Выключите, чтобы убрать все кнопки с Beatport и остановить обработку страниц.</span>
+        </label>
+        <input class="switch" type="checkbox" id="enabled">
+      </div>
+
+      <div class="row stack">
+        <label class="text" for="queryTemplate">
+          <span class="label">Шаблон поискового запроса</span>
+          <span class="hint">
+            Из чего собирать запрос для VK. Как на Beatport: сначала название трека, затем микс
+            (например <strong>Freak</strong> и <strong>Extended Mix</strong>), несколько артистов идут списком.
+          </span>
+        </label>
+        <input class="text-input wide" type="text" id="queryTemplate" spellcheck="false">
+
+        <div class="presets" id="presets">
+          <button type="button" class="chip" data-template="{artist} - {title}">{artist} - {title}</button>
+          <button type="button" class="chip" data-template="{artist} - {title} ({mix})">{artist} - {title} ({mix})</button>
+          <button type="button" class="chip" data-template="{artists} - {title}">{artists} - {title}</button>
+          <button type="button" class="chip" data-template="{title} {artist}">{title} {artist}</button>
+        </div>
+
+        <div class="tokens" id="tokens">
+          <span class="token">{artist}</span>
+          <span class="token">{artists}</span>
+          <span class="token">{title}</span>
+          <span class="token">{mix}</span>
+          <span class="token">{label}</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <label class="text" for="openInNewTab">
+          <span class="label">Открывать поиск в новой вкладке</span>
+          <span class="hint">Если выключить, поиск откроется в текущей вкладке. Средний клик и Ctrl+клик работают как обычно в любом случае.</span>
+        </label>
+        <input class="switch" type="checkbox" id="openInNewTab">
+      </div>
+
+      <div class="row">
+        <label class="text" for="queryEncoding">
+          <span class="label">Кодирование запроса</span>
+          <span class="hint">VK кодирует параметр поиска дважды, поэтому пробел в адресе выглядит как <strong>%2520</strong>. Если в строке поиска VK видно «%20», выберите обычное кодирование.</span>
+        </label>
+        <select class="select" id="queryEncoding">
+          <option value="double">Двойное (%2520) — как в VK</option>
+          <option value="single">Обычное (%20)</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label class="text" for="audioOwnerId">
+          <span class="label">ID владельца аудио</span>
+          <span class="hint">Число из адреса вашей музыки: <strong>vk.ru/audios&hellip;</strong>. Обычно определяется автоматически — можно оставить пустым.</span>
+        </label>
+        <input class="text-input" type="text" id="audioOwnerId" inputmode="numeric" placeholder="например, 123456789">
+      </div>
+
+      <p class="detected" id="detected"></p>
+
+      <div class="actions">
+        <button type="button" class="btn" id="reset">Сбросить настройки</button>
+        <span class="status" id="status" role="status"></span>
+      </div>
+    </form>
+
+    <section class="card">
+      <h2>Что получится</h2>
+      <p class="hint">
+        Пример со страницы Beatport: <strong>Fancy Footwork</strong> (Extended Mix),
+        артисты <strong>Chromeo, Chris Lorenzo</strong>.
+      </p>
+      <code id="preview" class="preview"></code>
+      <code id="previewUrl" class="preview"></code>
+    </section>
+
+    <details class="card how">
+      <summary>Как это работает</summary>
+      <ul>
+        <li>Расширение находит треки на Beatport в трёх местах: строки таблиц (топ-100, лейбл, артист), списки треков (треклист релиза, топ жанра, плейлисты) и шапку страницы трека.</li>
+        <li>Рядом с названием трека появляется кнопка <span class="inline-icon" aria-hidden="true">⌕</span> — она открывает <code>https://vk.ru/audios&lt;id&gt;?q=…</code> с уже заполненным поиском.</li>
+        <li>ID владельца аудио расширение подсматривает в адресе <code>vk.ru/audios&lt;ID&gt;</code>, когда вы открываете свою музыку. До этого ссылка идёт на <code>/audios?q=…</code>, а вкладка VK сама достроит переход.</li>
+        <li>Кнопка ничего не отправляет: это обычная ссылка, поэтому Ctrl+клик и средний клик открывают поиск в фоне.</li>
+        <li>Beatport — одностраничное приложение: кнопки восстанавливаются после перерисовки списков и переходов без перезагрузки.</li>
+      </ul>
+    </details>
+
+    <footer class="foot">
+      <span>Версия <span id="version">1.0.0</span></span>
+      <a href="https://vk.ru/audios" target="_blank" rel="noopener noreferrer">Открыть мою музыку</a>
+    </footer>
+  </main>
+
+  <script src="common.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+/* Кнопка поиска трека в VK, которая добавляется на Beatport. */
+
+a.bp2vk-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  margin: 0 0 0 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #9c9c9c !important;
+  font: inherit;
+  line-height: 1;
+  vertical-align: middle;
+  text-decoration: none !important;
+  cursor: pointer;
+  flex: none;
+  opacity: 0.65;
+  position: relative;
+  z-index: 2;
+  -webkit-user-select: none;
+  user-select: none;
+  transition: opacity 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+a.bp2vk-btn > svg {
+  display: block;
+  pointer-events: none;
+}
+
+a.bp2vk-btn:hover,
+a.bp2vk-btn:focus-visible {
+  opacity: 1;
+  color: #01ff95 !important;
+  background: rgba(1, 255, 149, 0.12);
+}
+
+a.bp2vk-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(1, 255, 149, 0.45);
+}
+
+a.bp2vk-btn:active {
+  opacity: 0.85;
+}
+
+/* В шапке страницы трека рядом с крупными кнопками плеера — чуть больше. */
+[class*="CollectionControls_controls"] a.bp2vk-btn {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  margin: 0 0 0 4px;
+}
+
+[class*="CollectionControls_controls"] a.bp2vk-btn > svg {
+  width: 16px;
+  height: 16px;
+}
+
+html.bp2vk-disabled a.bp2vk-btn {
+  display: none !important;
+}
