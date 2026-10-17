@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Beatport → VK Track Search",
   "short_name": "Beatport VK",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Добавляет кнопку поиска трека в аудио VK рядом с каждым треком на Beatport.",
   "permissions": ["storage"],
   "host_permissions": [

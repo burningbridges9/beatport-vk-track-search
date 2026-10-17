@@ -64,6 +64,29 @@ a.bp2vk-btn:active {
   height: 16px;
 }
 
+/* В карточке релиза строка названия узкая — кнопка компактнее. */
+[class*="ReleaseCard_releaseNameWrapper"] a.bp2vk-btn {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  margin: 0 0 0 4px;
+}
+
+/* В hero-блоке релиза — рядом с такими же крупными кнопками. */
+[class*="HeroRelease_actions"] a.bp2vk-btn {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  margin: 0 0 0 4px;
+}
+
+[class*="HeroRelease_actions"] a.bp2vk-btn > svg {
+  width: 18px;
+  height: 18px;
+}
+
 html.bp2vk-disabled a.bp2vk-btn {
   display: none !important;
 }

@@ -269,6 +269,7 @@ function scopeCounts(window) {
     header: buttons(window, '#track-header').length,
     cards: buttons(window, '#cards').length,
     hero: buttons(window, '#hero').length,
+    releaseList: buttons(window, '#release-list').length,
     total: buttons(window).length,
   };
 }
@@ -288,9 +289,10 @@ async function testLayoutAndDefaults() {
   check('таблица: 3 кнопки', counts.table === 3, counts);
   check('треклист-список: 2 кнопки', counts.list === 2, counts);
   check('шапка трека: 1 кнопка', counts.header === 1, counts);
-  check('карточки релизов: кнопок нет', counts.cards === 0, counts);
-  check('hero-блок релиза: кнопок нет', counts.hero === 0, counts);
-  check('всего 6 кнопок', counts.total === 6, counts);
+  check('карточка релиза: 1 кнопка', counts.cards === 1, counts);
+  check('hero-блок релиза: 1 кнопка', counts.hero === 1, counts);
+  check('строка-релиз в списке: 1 кнопка', counts.releaseList === 1, counts);
+  check('всего 9 кнопок', counts.total === 9, counts);
 
   const tableQueries = queries(window, '#table-rows');
   check('таблица, строка 1: первый артист + название', tableQueries[0] === 'Ink - Freak', tableQueries);
@@ -325,6 +327,11 @@ async function testLayoutAndDefaults() {
   check('aria-label совпадает с подсказкой', first.getAttribute('aria-label') === first.getAttribute('title'));
   check('ссылка открывается в новой вкладке', first.getAttribute('target') === '_blank');
   check('rel=noopener noreferrer', first.getAttribute('rel') === 'noopener noreferrer');
+  check(
+    'у трека в таблице ключ — ID трека, а не обложки-релиза',
+    first.getAttribute('data-bp2vk-key') === '30500496',
+    first.getAttribute('data-bp2vk-key')
+  );
 
   // Позиция: сразу после ссылки на трек, внутри строки заголовка.
   const anchor = buttons(window, '#table-rows')[0].previousElementSibling;
@@ -359,9 +366,56 @@ async function testLayoutAndDefaults() {
     headerButton.parentElement.className
   );
 
+  // Карточка релиза: ищем релиз целиком — артист и название релиза.
+  const cardButton = buttons(window, '#cards')[0];
+  check(
+    'карточка релиза: запрос из названия релиза',
+    cardButton.getAttribute('data-bp2vk-query') === 'Alex M.O.R.P.H. - Euphoria Rising',
+    cardButton.getAttribute('data-bp2vk-query')
+  );
+  check(
+    'карточка релиза: ID релиза в ключе',
+    cardButton.getAttribute('data-bp2vk-key') === '7501288',
+    cardButton.getAttribute('data-bp2vk-key')
+  );
+  check(
+    'карточка релиза: кнопка у названия, а не у обложки',
+    /ReleaseCard_releaseNameWrapper/.test(cardButton.parentElement.className) &&
+      !!cardButton.previousElementSibling &&
+      cardButton.previousElementSibling.getAttribute('href') === '/release/euphoria-rising/7501288',
+    cardButton.parentElement.className
+  );
+
+  // Hero-блок релиза: кнопка в ряду действий.
+  const heroButton = buttons(window, '#hero')[0];
+  check(
+    'hero релиза: запрос из названия релиза',
+    heroButton.getAttribute('data-bp2vk-query') === 'Activa - Velorum',
+    heroButton.getAttribute('data-bp2vk-query')
+  );
+  check(
+    'hero релиза: кнопка в ряду действий',
+    /HeroRelease_actions/.test(heroButton.parentElement.className),
+    heroButton.parentElement.className
+  );
+
+  // Строка-релиз в списке (ссылка на /release/ вместо /track/).
+  const releaseRowButton = buttons(window, '#release-list')[0];
+  check(
+    'строка-релиз: запрос собран из артистов списка',
+    releaseRowButton.getAttribute('data-bp2vk-query') === 'Electric Universe - Divine Intervention',
+    releaseRowButton.getAttribute('data-bp2vk-query')
+  );
+  check(
+    'строка-релиз: кнопка сразу после ссылки',
+    !!releaseRowButton.previousElementSibling &&
+      releaseRowButton.previousElementSibling.getAttribute('href') === '/release/divine-intervention/7482887',
+    releaseRowButton.previousElementSibling && releaseRowButton.previousElementSibling.getAttribute('href')
+  );
+
   // Повторный скан не должен дублировать кнопки.
   await afterMutation(window);
-  check('повторная отрисовка не дублирует кнопки', buttons(window).length === 6, buttons(window).length);
+  check('повторная отрисовка не дублирует кнопки', buttons(window).length === 9, buttons(window).length);
 
   dom.window.close();
 }
@@ -493,7 +547,7 @@ async function testBehavior() {
       queries(window, '#list-rows')[0] === 'Chromeo — Fancy Footwork (Extended Mix)',
       queries(window, '#list-rows')
     );
-    check('количество кнопок при этом не меняется', buttons(window).length === 6, buttons(window).length);
+    check('количество кнопок при этом не меняется', buttons(window).length === 9, buttons(window).length);
 
     // Выключение расширения убирает кнопки, включение — возвращает.
     chrome.__state.emit({ enabled: { newValue: false } }, 'sync');
@@ -501,7 +555,7 @@ async function testBehavior() {
     check('на <html> появляется класс отключения', window.document.documentElement.classList.contains('bp2vk-disabled'));
 
     chrome.__state.emit({ enabled: { newValue: true } }, 'sync');
-    check('включение возвращает кнопки', buttons(window).length === 6, buttons(window).length);
+    check('включение возвращает кнопки', buttons(window).length === 9, buttons(window).length);
 
     dom.window.close();
   }
@@ -529,13 +583,13 @@ async function testDynamicPage() {
   table.appendChild(row.cloneNode(true));
   await afterMutation(window);
   check('новая строка получает кнопку', buttons(window, '#table-rows').length === 4, scopeCounts(window));
-  check('всего стало 6 кнопок', buttons(window).length === 6, scopeCounts(window));
+  check('всего стало 9 кнопок', buttons(window).length === 9, scopeCounts(window));
 
   const scansBefore = scanCount(window);
   window.history.pushState({}, '', '/release/freak-extended-mix/7429942');
   const rescanned = await waitFor(() => scanCount(window) > scansBefore, 5000);
   check('после SPA-перехода страница пересканирована', rescanned === true, scanCount(window));
-  check('после SPA-перехода кнопки не дублируются', buttons(window).length === 6, scopeCounts(window));
+  check('после SPA-перехода кнопки не дублируются', buttons(window).length === 9, scopeCounts(window));
 
   dom.window.close();
 }
@@ -693,7 +747,7 @@ function testManifest() {
   const manifest = SOURCES.manifest;
 
   check('Manifest V3', manifest.manifest_version === 3, manifest.manifest_version);
-  check('версия манифеста совпадает с common.js', manifest.version === '1.0.0', manifest.version);
+  check('версия манифеста совпадает с common.js', manifest.version === '1.1.0', manifest.version);
   check('есть разрешение storage', (manifest.permissions || []).includes('storage'), manifest.permissions);
 
   const scripts = manifest.content_scripts || [];

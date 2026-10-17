@@ -7,6 +7,9 @@ test/.deps/.pnpm-store/
 .pnpm-store/
 node_modules/
 
+# Local research of Beatport markup: raw HTML snapshots and helper scripts
+_research/
+
 # OS / editor noise
 .DS_Store
 Thumbs.db

@@ -13,8 +13,9 @@
       #table-rows    — таблица топ-100 / лейбла / артиста
       #list-rows     — треклист релиза, топ жанра, плейлисты
       #track-header  — шапка страницы трека
-      #cards         — сетка карточек релизов, кнопок быть не должно
-      #hero          — hero-блок релиза, кнопок быть не должно
+      #cards         — карточка релиза из «Latest … Music Releases»
+      #hero          — hero-блок релиза (крупный баннер)
+      #release-list   — строка-релиз в списке (ссылка ведёт на /release/)
   -->
 
   <!-- ============================ 1. Таблица ============================ -->
@@ -179,43 +180,88 @@
     </div>
   </div>
 
-  <!-- ==================== 4. Карточки релизов: нельзя ==================== -->
+  <!-- ============ 4. Карточка релиза: кнопка ставится у названия ============ -->
   <div id="cards" class="Grids_shared_gridRow__D3DAm">
     <div class="GridSlider_gridWrapper__HYe_u">
-      <div class="ReleaseCard_wrapper__roth2 wide">
+      <div class="ReleaseCard_wrapper__roth2">
         <div class="ReleaseCard_imageWrapper__OLBOn">
-          <a title="Bassline" class="ReleaseCard_cardLink__kK1zx" href="/release/bassline/7474253"><img alt="Bassline" width="180" height="180" src="https://geo-media.beatport.com/image_size/250x250/1b550006.jpg"></a>
+          <div class="ReleaseCard_badges__sBG5h"><div class="ReleaseCard_exclusive__vEv6E">EXCLUSIVE</div></div>
+          <a title="Euphoria Rising" class="artwork" href="/release/euphoria-rising/7501288"><img alt="Euphoria Rising" loading="lazy" width="200" height="200" src="https://geo-media.beatport.com/image_size/500x500/eca8178f.jpg"></a>
           <div class="ReleaseCard_cardActions__MrExp">
             <div class="ReleaseCard_actions__cAfeW">
               <div class="ReleaseCard_actionsControls__cxoU8">
                 <button class="Play_control__NmBxO" data-testid="play-button"><svg role="img" width="16" height="16" data-testid="inline-button-play_track" focusable="false"><use href="/icons/sprite.svg#track-play-inline"></use></svg></button>
+                <div class="Tooltip_wrapper__JrWWk"><button class="AddToPlaylist_control__y8UoZ" data-testid="add-to-playlist-button"><svg role="img" width="14" height="14" data-testid="icon-playlist-add" focusable="false"><use href="/icons/sprite.svg#playlist-add"></use></svg></button></div>
               </div>
+              <div class="AddToCart_control___eEly add-to-cart fade"><button class="AddToCart_priceButton__eiLRL" aria-label="Add release 'Euphoria Rising' to cart. Price: $2.49">$2.49</button></div>
             </div>
           </div>
         </div>
-        <div class="ReleaseCard_meta__wJpQq">
-          <div class="ReleaseCard_releaseNameWrapper__Yq1wZ"><a title="Bassline" class="ReleaseCard_releaseName__q7hFo" href="/release/bassline/7474253">Bassline</a></div>
-          <div class="ArtistNames_artistNames__hBkpj"><a title="Majestic" href="/artist/majestic/11550">Majestic</a></div>
+        <div class="ReleaseCard_meta__JMLLb">
+          <div class="ReleaseCard_releaseNameWrapper__HY0CI">
+            <a style="min-width:0;flex-grow:1" href="/release/euphoria-rising/7501288"><span class="ReleaseCard_cropLink__h74i3 artwork" title="Euphoria Rising"><div class="Marquee-style__MarqueeGrid-sc-b0373cc7-2 gjGaED marquee-grid"><div data-testid="marquee-parent" class="Marquee-style__MarqueeWrapper-sc-b0373cc7-1 lnCua"><div class="Marquee-style__MarqueeElement-sc-b0373cc7-0 hhOlKp"><span class="ReleaseCard_releaseName__NPsgP">Euphoria Rising</span></div></div></div></span></a>
+          </div>
+          <div class="ReleaseCard_cardLink__ivPHr">
+            <div class="Marquee-style__MarqueeGrid-sc-b0373cc7-2 gjGaED marquee-grid"><div data-testid="marquee-parent" class="Marquee-style__MarqueeWrapper-sc-b0373cc7-1 lnCua"><div class="Marquee-style__MarqueeElement-sc-b0373cc7-0 hhOlKp"><a title="Alex M.O.R.P.H." href="/artist/alex-morph/3396">Alex M.O.R.P.H.</a>,&nbsp;<a title="Fernweh" href="/artist/fernweh/590145">Fernweh</a></div></div></div>
+          </div>
+          <div class="ReleaseCard_cardLink__ivPHr">
+            <a title="FSOE" href="/label/fsoe/56548"><div class="Marquee-style__MarqueeGrid-sc-b0373cc7-2 gjGaED marquee-grid"><div data-testid="marquee-parent" class="Marquee-style__MarqueeWrapper-sc-b0373cc7-1 hhQyXh"><div class="Marquee-style__MarqueeElement-sc-b0373cc7-0 hhOlKp"><span class="ReleaseCard_cropLink__h74i3" title="FSOE">FSOE</span></div></div></div></a>
+          </div>
+        </div>
+        <div class="ReleaseCard_cardControls__KfasV">
+          <a class="ReleaseCard_cardButton__2pHuz"><button class="Play_control__NmBxO" data-testid="play-button"><svg role="img" width="16" height="16" data-testid="inline-button-play_track" focusable="false"><use href="/icons/sprite.svg#track-play-inline"></use></svg></button></a>
+          <a class="ReleaseCard_cardButton__2pHuz"><svg role="img" width="16" height="16" data-testid="icon-dots" focusable="false"><use href="/icons/sprite.svg#dots"></use></svg></a>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ==================== 5. Hero-блок релиза: нельзя =================== -->
+  <!-- ==================== 5. Hero-блок релиза ==================== -->
   <div id="hero" class="hero-release HeroRelease_wrapper__lBif_">
     <div class="HeroRelease_imageWrapper__ILkoO">
-      <a title="Tension EP" class="artwork" href="/release/tension-ep/7480354"><img alt="Tension EP" width="1200" height="582" src="https://geo-media.beatport.com/image_size/1050x508/20d9eedf.jpg"></a>
+      <div class="HeroRelease_badges__orAgq"><div class="HeroRelease_exclusive__G0jJn">EXCLUSIVE</div></div>
+      <a title="Velorum" class="artwork" href="/release/velorum/7478038"><div class="HeroRelease_imagePlaceholder__9WPd3" style="aspect-ratio: 2.06 / 1;"></div><img alt="Velorum" width="1050" height="508" src="https://geo-media.beatport.com/image_size/1050x508/17bcc913.jpg"></a>
     </div>
     <div class="HeroRelease_meta___T4kA">
       <div>
-        <a title="Tension EP" class="artwork" href="/release/tension-ep/7480354"><span class="HeroRelease_releaseName__DI77j">Tension EP</span></a>
+        <a title="Velorum" class="artwork" href="/release/velorum/7478038"><span class="HeroRelease_releaseName__DI77j">Velorum</span></a>
         <div class="HeroRelease_artistsAndLabel__Zo6Zp">
-          <div class="HeroRelease_artists__L3qf_"><a title="INNDRIVE" href="/artist/inndrive/724778">INNDRIVE</a></div>
-          <div class="HeroRelease_label__wHBiV"><a title="ESSEntial." class="artwork" href="/label/essential/148587">ESSEntial.</a></div>
+          <div class="HeroRelease_artists__L3qf_"><a title="Activa" href="/artist/activa/4071">Activa</a></div>
+          <div class="HeroRelease_label__wHBiV"><a title="VII" class="artwork" href="/label/vii/56833"><div class="Marquee-style__MarqueeGrid-sc-b0373cc7-2 gjGaED marquee-grid"><div data-testid="marquee-parent" class="Marquee-style__MarqueeWrapper-sc-b0373cc7-1 lnCua"><div class="Marquee-style__MarqueeElement-sc-b0373cc7-0 hhOlKp">VII</div></div></div></a></div>
         </div>
       </div>
       <div class="HeroRelease_actions__wMxNq">
         <button class="Play_control__NmBxO" data-testid="play-button"><svg role="img" width="32" height="32" data-testid="icon-play-button" focusable="false"><use href="/icons/sprite.svg#play-button"></use></svg></button>
+        <div class="Tooltip_wrapper__JrWWk"><button class="AddToQueue_control__FbkNe" data-testid="add-to-queue-button"><svg role="img" width="24" height="24" data-testid="icon-queue-add" focusable="false"><use href="/icons/sprite.svg#queue-add"></use></svg></button></div>
+        <div class="Tooltip_wrapper__JrWWk"><button class="AddToPlaylist_control__y8UoZ" data-testid="add-to-playlist-button"><svg role="img" width="14" height="14" data-testid="icon-playlist-add" focusable="false"><use href="/icons/sprite.svg#playlist-add"></use></svg></button></div>
+        <div class="AddToCart_control___eEly add-to-cart fade"><button class="AddToCart_priceButton__eiLRL" aria-label="Add release 'Velorum' to cart. Price: $4.98">$4.98</button></div>
+      </div>
+    </div>
+    <div class="HeroRelease_cardControls__bVPPo"><a class="HeroRelease_cardButton___xNy5"><svg role="img" width="32" height="32" data-testid="icon-dots" focusable="false"><use href="/icons/sprite.svg#dots"></use></svg></a></div>
+  </div>
+
+  <!-- ============ 6. Строка-релиз в списке (ссылка на /release/) ============ -->
+  <div id="release-list" class="Lists-shared-style__Wrapper-sc-32b78157-15 cquKXn column undefined">
+    <div class="Lists-shared-style__Item-sc-32b78157-14 hcVWWj no-artwork">
+      <div class="Lists-shared-style__ItemMeta-sc-32b78157-10 kEkezT">
+        <button data-testid="track-number" class="Lists-shared-style__ItemNumber-sc-32b78157-9 etNEMr">1</button>
+        <div class="play-hover"><button class="Play_control__NmBxO" data-testid="play-button"><svg role="img" width="16" height="16" data-testid="inline-button-play_track" focusable="false"><use href="/icons/sprite.svg#track-play-inline"></use></svg></button></div>
+        <div class="Lists-shared-style__MetaRow-sc-32b78157-4 ivrRkl">
+          <div class="Lists-shared-style__TitleRow-sc-32b78157-13 kAFoYB">
+            <a title="Divine Intervention" style="min-width:0;flex-grow:1" href="/release/divine-intervention/7482887"><div class="Marquee-style__MarqueeGrid-sc-b0373cc7-2 gjGaED marquee-grid"><div data-testid="marquee-parent" class="Marquee-style__MarqueeWrapper-sc-b0373cc7-1 hhQyXh"><div class="Marquee-style__MarqueeElement-sc-b0373cc7-0 hhOlKp"><span class="Lists-shared-style__ItemName-sc-32b78157-8 ddJlUV">Divine Intervention<!-- --> </span></div></div></div></a>
+          </div>
+          <div class="Marquee-style__MarqueeGrid-sc-b0373cc7-2 gjGaED marquee-grid">
+            <div data-testid="marquee-parent" class="Marquee-style__MarqueeWrapper-sc-b0373cc7-1 hhQyXh"><div class="Marquee-style__MarqueeElement-sc-b0373cc7-0 hhOlKp"><div class="ReleasesList-style__Artists-sc-247cfb4e-0 iYxFzQ"><a title="Electric Universe" href="/artist/electric-universe/10546">Electric Universe</a>,&nbsp;<a title="Sara Landry" href="/artist/sara-landry/663399">Sara Landry</a></div></div></div>
+          </div>
+          <div class="Marquee-style__MarqueeGrid-sc-b0373cc7-2 gjGaED marquee-grid">
+            <div data-testid="marquee-parent" class="Marquee-style__MarqueeWrapper-sc-b0373cc7-1 hhQyXh"><div class="Marquee-style__MarqueeElement-sc-b0373cc7-0 hhOlKp"><a title="HEKATE" href="/label/hekate/164479"><span class="ReleaseCard_cropLink__h74i3" title="HEKATE">HEKATE</span></a></div></div>
+          </div>
+        </div>
+      </div>
+      <div data-overlayfor="release-7482887" class="Lists-shared-style__ItemActions-sc-32b78157-11 ctZbcj">
+        <div class="actions">
+          <span class="play"><button class="Play_control__NmBxO" data-testid="play-button"><svg role="img" width="16" height="16" data-testid="inline-button-play_track" focusable="false"><use href="/icons/sprite.svg#track-play-inline"></use></svg></button></span>
+        </div>
       </div>
     </div>
   </div>
