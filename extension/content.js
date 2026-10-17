@@ -322,7 +322,7 @@
       return window.BP2VK.renderQuery(info, settings);
     }
     var artists = info.artists || [];
-    return normalizeText([artists[0] || '', info.title || ''].join(' - '))
+    return normalizeText([artists.join(', '), info.title || ''].join(' - '))
       .replace(/^[\s\-–—]+/, '')
       .trim();
   }

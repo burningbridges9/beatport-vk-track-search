@@ -34,22 +34,24 @@
         <label class="text" for="queryTemplate">
           <span class="label">Шаблон поискового запроса</span>
           <span class="hint">
-            Из чего собирать запрос для VK. Как на Beatport: сначала название трека, затем микс
-            (например <strong>Freak</strong> и <strong>Extended Mix</strong>), несколько артистов идут списком.
+            Из чего собирать запрос для VK. Артисты подставляются <strong>все, через запятую</strong> —
+            так трек обычно и подписан в VK. Как на Beatport: сначала название трека, затем микс
+            (например <strong>Freak</strong> и <strong>Extended Mix</strong>).
           </span>
         </label>
         <input class="text-input wide" type="text" id="queryTemplate" spellcheck="false">
 
         <div class="presets" id="presets">
-          <button type="button" class="chip" data-template="{artist} - {title}">{artist} - {title}</button>
-          <button type="button" class="chip" data-template="{artist} - {title} ({mix})">{artist} - {title} ({mix})</button>
           <button type="button" class="chip" data-template="{artists} - {title}">{artists} - {title}</button>
-          <button type="button" class="chip" data-template="{title} {artist}">{title} {artist}</button>
+          <button type="button" class="chip" data-template="{artists} - {title} ({mix})">{artists} - {title} ({mix})</button>
+          <button type="button" class="chip" data-template="{mainArtist} - {title}">{mainArtist} - {title}</button>
+          <button type="button" class="chip" data-template="{title} {artists}">{title} {artists}</button>
         </div>
 
         <div class="tokens" id="tokens">
-          <span class="token">{artist}</span>
-          <span class="token">{artists}</span>
+          <span class="token" title="Все артисты через запятую">{artists}</span>
+          <span class="token" title="То же, что {artists}">{artist}</span>
+          <span class="token" title="Только первый артист">{mainArtist}</span>
           <span class="token">{title}</span>
           <span class="token">{mix}</span>
           <span class="token">{label}</span>

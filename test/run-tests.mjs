@@ -295,7 +295,7 @@ async function testLayoutAndDefaults() {
   check('всего 9 кнопок', counts.total === 9, counts);
 
   const tableQueries = queries(window, '#table-rows');
-  check('таблица, строка 1: первый артист + название', tableQueries[0] === 'Ink - Freak', tableQueries);
+  check('таблица, строка 1: все артисты через запятую', tableQueries[0] === 'Ink, Mesto - Freak', tableQueries);
   check('таблица, строка 2: без микса', tableQueries[1] === 'Space Motion - Push & Pull', tableQueries);
   check(
     'таблица, строка 3: скобки в имени артиста сохранены',
@@ -304,14 +304,14 @@ async function testLayoutAndDefaults() {
   );
 
   const listQueries = queries(window, '#list-rows');
-  check('список: Chromeo - Fancy Footwork', listQueries[0] === 'Chromeo - Fancy Footwork', listQueries);
+  check('список: все артисты через запятую', listQueries[0] === 'Chromeo, Chris Lorenzo - Fancy Footwork', listQueries);
   check('список: Kepler (UK) - Inner Motion', listQueries[1] === 'Kepler (UK) - Inner Motion', listQueries);
-  check('шапка трека: Ink - Freak', queries(window, '#track-header')[0] === 'Ink - Freak');
+  check('шапка трека: Ink, Mesto - Freak', queries(window, '#track-header')[0] === 'Ink, Mesto - Freak');
 
   const first = buttons(window, '#table-rows')[0];
   check(
     'ссылка без известного ID ведёт на /audios?q=',
-    first.getAttribute('href') === 'https://vk.ru/audios?q=Ink%2520-%2520Freak',
+    first.getAttribute('href') === 'https://vk.ru/audios?q=Ink%252C%2520Mesto%2520-%2520Freak',
     first.getAttribute('href')
   );
   check(
@@ -321,7 +321,7 @@ async function testLayoutAndDefaults() {
   );
   check(
     'подсказка содержит запрос',
-    first.getAttribute('title') === 'Найти «Ink - Freak» в аудио VK',
+    first.getAttribute('title') === 'Найти «Ink, Mesto - Freak» в аудио VK',
     first.getAttribute('title')
   );
   check('aria-label совпадает с подсказкой', first.getAttribute('aria-label') === first.getAttribute('title'));
@@ -370,7 +370,7 @@ async function testLayoutAndDefaults() {
   const cardButton = buttons(window, '#cards')[0];
   check(
     'карточка релиза: запрос из названия релиза',
-    cardButton.getAttribute('data-bp2vk-query') === 'Alex M.O.R.P.H. - Euphoria Rising',
+    cardButton.getAttribute('data-bp2vk-query') === 'Alex M.O.R.P.H., Fernweh - Euphoria Rising',
     cardButton.getAttribute('data-bp2vk-query')
   );
   check(
@@ -403,7 +403,7 @@ async function testLayoutAndDefaults() {
   const releaseRowButton = buttons(window, '#release-list')[0];
   check(
     'строка-релиз: запрос собран из артистов списка',
-    releaseRowButton.getAttribute('data-bp2vk-query') === 'Electric Universe - Divine Intervention',
+    releaseRowButton.getAttribute('data-bp2vk-query') === 'Electric Universe, Sara Landry - Divine Intervention',
     releaseRowButton.getAttribute('data-bp2vk-query')
   );
   check(
@@ -427,7 +427,11 @@ async function testQueryTemplates() {
       settings: { queryTemplate: '{artist} - {title} ({mix})' },
     });
     const listQueries = queries(window, '#list-rows');
-    check('микс в скобках добавляется', listQueries[0] === 'Chromeo - Fancy Footwork (Extended Mix)', listQueries);
+    check(
+      'старый токен {artist} тоже даёт всех артистов',
+      listQueries[0] === 'Chromeo, Chris Lorenzo - Fancy Footwork (Extended Mix)',
+      listQueries
+    );
     check(
       'без микса скобки не появляются',
       queries(window, '#table-rows')[1] === 'Space Motion - Push & Pull',
@@ -441,6 +445,17 @@ async function testQueryTemplates() {
     dom.window.close();
   }
   {
+    // Шаблон по умолчанию из версий 1.0–1.1: поведение должно остаться прежним
+    // по смыслу, но теперь с полным списком артистов.
+    const { dom, window } = await bootBeatport({ settings: { queryTemplate: '{artist} - {title}' } });
+    check(
+      'сохранённый шаблон 1.0–1.1 даёт всех артистов',
+      queries(window, '#table-rows')[0] === 'Ink, Mesto - Freak',
+      queries(window, '#table-rows')
+    );
+    dom.window.close();
+  }
+  {
     const { dom, window } = await bootBeatport({ settings: { queryTemplate: '{artists} - {title}' } });
     check(
       'все артисты через запятую',
@@ -450,15 +465,28 @@ async function testQueryTemplates() {
     dom.window.close();
   }
   {
-    const { dom, window } = await bootBeatport({ settings: { queryTemplate: '{title} {artist}' } });
-    check('обратный порядок', queries(window, '#table-rows')[0] === 'Freak Ink', queries(window, '#table-rows'));
+    const { dom, window } = await bootBeatport({ settings: { queryTemplate: '{mainArtist} - {title}' } });
+    check(
+      '{mainArtist} — только первый артист',
+      queries(window, '#table-rows')[0] === 'Ink - Freak',
+      queries(window, '#table-rows')
+    );
     dom.window.close();
   }
   {
-    const { dom, window } = await bootBeatport({ settings: { queryTemplate: '{artist} - {title} [{label}]' } });
+    const { dom, window } = await bootBeatport({ settings: { queryTemplate: '{title} {artists}' } });
+    check(
+      'обратный порядок',
+      queries(window, '#table-rows')[0] === 'Freak Ink, Mesto',
+      queries(window, '#table-rows')
+    );
+    dom.window.close();
+  }
+  {
+    const { dom, window } = await bootBeatport({ settings: { queryTemplate: '{artists} - {title} [{label}]' } });
     check(
       'метка лейбла подставляется',
-      queries(window, '#table-rows')[0] === 'Ink - Freak [Experts Only]',
+      queries(window, '#table-rows')[0] === 'Ink, Mesto - Freak [Experts Only]',
       queries(window, '#table-rows')
     );
     dom.window.close();
@@ -467,7 +495,7 @@ async function testQueryTemplates() {
     const { dom, window } = await bootBeatport({ settings: { queryTemplate: 'без подстановки' } });
     check(
       'шаблон без {title} откатывается к значению по умолчанию',
-      queries(window, '#table-rows')[0] === 'Ink - Freak',
+      queries(window, '#table-rows')[0] === 'Ink, Mesto - Freak',
       queries(window, '#table-rows')
     );
     dom.window.close();
@@ -479,7 +507,7 @@ async function testOwnerIdAndEncoding() {
   {
     const { dom, window } = await bootBeatport({ local: { detectedAudioOwnerId: '123456789' } });
     const href = buttons(window, '#table-rows')[0].getAttribute('href');
-    check('ID из storage.local подставляется в адрес', href === 'https://vk.ru/audios123456789?q=Ink%2520-%2520Freak', href);
+    check('ID из storage.local подставляется в адрес', href === 'https://vk.ru/audios123456789?q=Ink%252C%2520Mesto%2520-%2520Freak', href);
     dom.window.close();
   }
   {
@@ -494,13 +522,13 @@ async function testOwnerIdAndEncoding() {
   {
     const { dom, window } = await bootBeatport({ settings: { queryEncoding: 'single' } });
     const href = buttons(window, '#table-rows')[0].getAttribute('href');
-    check('одинарное кодирование даёт %20', href === 'https://vk.ru/audios?q=Ink%20-%20Freak', href);
+    check('одинарное кодирование даёт %20', href === 'https://vk.ru/audios?q=Ink%2C%20Mesto%20-%20Freak', href);
     dom.window.close();
   }
   {
     const { dom, window } = await bootBeatport({ settings: { audioOwnerId: 'не число' } });
     const href = buttons(window, '#table-rows')[0].getAttribute('href');
-    check('нечисловой ID игнорируется', href === 'https://vk.ru/audios?q=Ink%2520-%2520Freak', href);
+    check('нечисловой ID игнорируется', href === 'https://vk.ru/audios?q=Ink%252C%2520Mesto%2520-%2520Freak', href);
     dom.window.close();
   }
 }
@@ -524,7 +552,7 @@ async function testBehavior() {
     const pending = chrome.__state.localWrites.filter((write) => write.pendingAudioSearch).pop();
     check(
       'без ID нажатие запоминает отложенный запрос',
-      !!pending && pending.pendingAudioSearch.query === 'Ink - Freak',
+      !!pending && pending.pendingAudioSearch.query === 'Ink, Mesto - Freak',
       chrome.__state.localWrites
     );
 
@@ -544,7 +572,7 @@ async function testBehavior() {
     chrome.__state.emit({ queryTemplate: { newValue: '{artist} — {title} ({mix})' } }, 'sync');
     check(
       'смена шаблона обновляет запрос на месте',
-      queries(window, '#list-rows')[0] === 'Chromeo — Fancy Footwork (Extended Mix)',
+      queries(window, '#list-rows')[0] === 'Chromeo, Chris Lorenzo — Fancy Footwork (Extended Mix)',
       queries(window, '#list-rows')
     );
     check('количество кнопок при этом не меняется', buttons(window).length === 9, buttons(window).length);
@@ -610,7 +638,7 @@ async function testLocalizedPages() {
   if (found.length) {
     check(
       'артисты берутся из /es/artist/',
-      found[0].getAttribute('data-bp2vk-query') === 'SHDWS (US) - Mumble',
+      found[0].getAttribute('data-bp2vk-query') === 'SHDWS (US), Jungle 70 - Mumble',
       found[0].getAttribute('data-bp2vk-query')
     );
     check(
@@ -620,7 +648,7 @@ async function testLocalizedPages() {
     );
     check(
       'ссылка VK собрана с ID',
-      found[0].getAttribute('href') === 'https://vk.ru/audios123456789?q=SHDWS%2520(US)%2520-%2520Mumble',
+      found[0].getAttribute('href') === 'https://vk.ru/audios123456789?q=SHDWS%2520(US)%252C%2520Jungle%252070%2520-%2520Mumble',
       found[0].getAttribute('href')
     );
   }
@@ -714,7 +742,7 @@ async function testOptions() {
   template.dispatchEvent(new window.Event('input', { bubbles: true }));
   check(
     'предпросмотр реагирует на шаблон',
-    doc.getElementById('preview').textContent.indexOf('Chromeo - Fancy Footwork (Extended Mix)') !== -1,
+    doc.getElementById('preview').textContent.indexOf('Chromeo, Chris Lorenzo - Fancy Footwork (Extended Mix)') !== -1,
     doc.getElementById('preview').textContent
   );
 
@@ -732,10 +760,10 @@ async function testOptions() {
   check('изменения сохраняются в chrome.storage.sync', saved === true, chrome.__state.syncWrites);
 
   doc.getElementById('reset').click();
-  check('сброс возвращает шаблон по умолчанию', template.value === '{artist} - {title}', template.value);
+  check('сброс возвращает шаблон по умолчанию', template.value === '{artists} - {title}', template.value);
   const resetWritten = await waitFor(() => {
     const last = chrome.__state.syncWrites[chrome.__state.syncWrites.length - 1];
-    return !!last && last.queryTemplate === '{artist} - {title}';
+    return !!last && last.queryTemplate === '{artists} - {title}';
   }, 3000);
   check('сброс записывает значения по умолчанию', resetWritten === true, chrome.__state.syncWrites);
 
@@ -747,7 +775,7 @@ function testManifest() {
   const manifest = SOURCES.manifest;
 
   check('Manifest V3', manifest.manifest_version === 3, manifest.manifest_version);
-  check('версия манифеста совпадает с common.js', manifest.version === '1.1.0', manifest.version);
+  check('версия манифеста совпадает с common.js', manifest.version === '1.2.0', manifest.version);
   check('есть разрешение storage', (manifest.permissions || []).includes('storage'), manifest.permissions);
 
   const scripts = manifest.content_scripts || [];
